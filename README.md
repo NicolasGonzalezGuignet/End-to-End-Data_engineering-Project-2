@@ -1,4 +1,4 @@
-# End-to-End Data Engineering Project using Snowflake
+# End-to-End Data Engineering Project using Azure and Snowflake
 
 ## Summary
 In this project, data is extracted from various sources including a website (via web scraping) and an Azure SQL database (OLTP database). Data ingestion is performed using Azure Data Factory, and the data is stored in a data lake (ADLS Gen2). This [datalake](datalake/datalake_structure.txt) contains 3 layers (raw/silver/gold) based on the Medallion Architecture <img src="https://i.imgur.com/dMMYxvw.png" alt="Medallion Architecture">, where data is initially stored in its native format (CSV) in the raw layer. Then, transformations (filtering, cleaning, etc.) are applied in Databricks and stored in Delta format in the silver layer. Finally, dimension modeling is performed to address business needs (using SQL in Databricks), and the resulting dimension and fact tables are stored in the gold layer. The tables are then made available in Databricks SQL for Power BI connectivity, enabling end users to visualize the data and make decisions. The entire process is orchestrated using Azure Data Factory.
