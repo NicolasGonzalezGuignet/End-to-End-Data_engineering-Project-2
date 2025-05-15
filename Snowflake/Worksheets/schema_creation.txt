@@ -1,0 +1,54 @@
+create or replace database weather;
+create or replace schema weather.landing; --esto es mas que nada para ver desde la external stage, como para hacer query select y eso... no guardas nada
+create or replace schema weather.raw;
+create or replace schema weather.silver;
+create or replace schema weather.gold;
+
+show schemas in database weather;
+
+create or replace file format weather.landing.json_format
+    type = json
+    strip_outer_array = true
+    IGNORE_UTF8_ERRORS = FALSE;
+
+use schema weather.landing;
+-- tambien podemos hacer query a los datos
+SELECT
+    t.$1:coord::variant as coord,
+    t.$1:weather[0]::variant as weather,
+    t.$1:main::variant as main,
+    t.$1:wind::variant as wind,
+    t.$1:clouds::variant as clouds,
+    t.$1:sys::variant as sys,
+    t.$1:visibility::variant as visibility_meters,
+    t.$1:name::variant as city,
+    t.$1:timezone::variant as timezone,
+    t.$1:dt as datetime_unix
+FROM @weather_stage/weather/weather_2025-05-02-17.json (FILE_FORMAT => weather.landing.json_format) t;
+
+SELECT
+    t.$1:coord::variant as coord,
+    t.$1:list[0]::variant as main
+FROM @weather_stage/air_pollution/air_pollution2025-05-02-17.json (FILE_FORMAT => weather.landing.json_format) t;
+
+SELECT
+    t.$1:list::variant as list,
+    t.$1:city::variant as city
+FROM @weather_stage/forecast/forecast_2025-05-02.json (FILE_FORMAT => weather.landing.json_format) t;
+
+SELECT
+    t.$1:meta::variant as metadata,
+    t.$1:data::variant as list
+FROM @weather_stage/daily_weather/daily_weather_2025-05.json (FILE_FORMAT => weather.landing.json_format) t;
+
+
+
+
+
+
+
+
+
+    
+
+
