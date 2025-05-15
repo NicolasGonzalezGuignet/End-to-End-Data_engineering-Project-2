@@ -1,0 +1,86 @@
+-- CREAR LAS TABLAS
+--weather
+create or replace table weather.raw.raw_json_data_weather(
+    json_data variant,
+    filename string,
+    processed_at timestamp_ntz
+);
+--air_pollution
+create or replace table weather.raw.raw_json_data_air_pollution(
+    json_data variant,
+    filename string,
+    processed_at timestamp_ntz
+);
+--forecast
+create or replace table weather.raw.raw_json_data_forecast(
+    json_data variant,
+    filename string,
+    processed_at timestamp_ntz
+);
+--daily_weather
+create or replace table weather.raw.raw_json_data_daily_weather(
+    json_data variant,
+    filename string,
+    processed_at timestamp_ntz
+);
+
+-- CREAMOS LOS PIPES QUE VAN A INSERTAR EN LAS TABLAS CREADAS ANTERIORMENTE
+CREATE OR REPLACE PIPE weather_pipe 
+AUTO_INGEST=TRUE
+INTEGRATION=weather_notification
+AS
+COPY INTO weather.raw.raw_json_data_weather (json_data, filename, processed_at)
+FROM (
+    SELECT 
+        t.$1 AS json_data,
+        METADATA$FILENAME AS filename,
+        METADATA$FILE_LAST_MODIFIED AS processed_at
+    FROM @weather_stage/weather/ (FILE_FORMAT => weather.landing.json_format) t);
+    
+--el from dice donde se fijara cuando se suba el file en este caso en @weather_stage=raw + /weather y asi podemos hacer varios pipe sin crear distintos stage o cosas mas complicadas
+
+
+CREATE OR REPLACE PIPE air_pollution_pipe 
+AUTO_INGEST=TRUE
+INTEGRATION=weather_notification
+AS
+COPY INTO weather.raw.raw_json_data_air_pollution (json_data, filename, processed_at)
+FROM (
+    SELECT 
+        t.$1 AS json_data,
+        METADATA$FILENAME AS filename,
+        METADATA$file_last_modified AS processed_at
+    FROM @weather_stage/air_pollution/ (FILE_FORMAT => weather.landing.json_format) t);
+
+
+CREATE OR REPLACE PIPE forecast_pipe 
+AUTO_INGEST=TRUE
+INTEGRATION=weather_notification
+AS
+COPY INTO weather.raw.raw_json_data_forecast (json_data, filename, processed_at)
+FROM (
+    SELECT
+        t.$1 AS json_data,
+        METADATA$FILENAME AS filename,
+        METADATA$file_last_modified AS processed_at
+    FROM @weather_stage/forecast/ (FILE_FORMAT => weather.landing.json_format) t);
+
+
+CREATE OR REPLACE PIPE daily_weather_pipe 
+AUTO_INGEST=TRUE
+INTEGRATION=weather_notification
+AS
+COPY INTO weather.raw.raw_json_data_daily_weather (json_data, filename, processed_at)
+FROM (
+    SELECT
+        t.$1 AS json_data,
+        METADATA$FILENAME AS filename,
+        METADATA$file_last_modified AS processed_at
+    FROM @weather_stage/daily_weather/ (FILE_FORMAT => weather.landing.json_format) t);
+
+
+show PIPES;
+
+-- lo q entiendo de aca es q snowpipe detecta files sin importar q no esten en ese directorio en especifico, detecta tambien posterior a ese, lo cual nos quita las copias de las actividades en adf...
+
+
