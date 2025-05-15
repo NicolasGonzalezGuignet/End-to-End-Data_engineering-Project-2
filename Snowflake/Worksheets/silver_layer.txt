@@ -1,0 +1,111 @@
+-- dynamic tables
+create or replace dynamic table weather.silver.clean_weather
+target_lag= '1 hour'
+warehouse= 'COMPUTE_WH'
+refresh_mode=incremental --la otra opcion es full y hace las transformaciones a toda la tabla 
+initialize=on_create
+as
+select
+    DATE_TRUNC('HOUR',TO_TIMESTAMP(JSON_DATA:dt)) AS id,
+    JSON_DATA:coord:lat::float as lat,
+    JSON_DATA:coord:lon::float as lon,
+    JSON_DATA:weather[0]:main::string as status,
+    JSON_DATA:weather[0]:description::string as description,
+    JSON_DATA:main:temp::float as temperature_celsius,
+    JSON_DATA:main:feels_like::float as feels_like,
+    JSON_DATA:main:humidity::float as humidity_percentage,
+    JSON_DATA:wind:speed::float as wind_speed_mps,
+    JSON_DATA:clouds:all::float as cloudiness_percentage,
+    JSON_DATA:visibility::float as visibility_meters,
+    JSON_DATA:name::string as city,
+    JSON_DATA:sys:country::string as country
+     
+from weather.raw.raw_json_data_weather;
+
+
+create or replace dynamic table weather.silver.clean_air_pollution
+target_lag= '1 hour'
+warehouse= 'COMPUTE_WH'
+refresh_mode=incremental --la otra opcion es full y hace las transformaciones a toda la tabla 
+initialize=on_create
+as
+select
+    DATE_TRUNC('HOUR',TO_TIMESTAMP(JSON_DATA:list[0]:dt)) AS id,
+    JSON_DATA:coord:lat::float as lat,
+    JSON_DATA:coord:lon::float as lon,
+    JSON_DATA:list[0]:main."aqi"::int as air_quality_index,
+    JSON_DATA:list[0]:components."co"::float as co,
+    JSON_DATA:list[0]:components."no"::float as no,
+    JSON_DATA:list[0]:components."no2"::float as no2,
+    JSON_DATA:list[0]:components."o3"::float as o3,
+    JSON_DATA:list[0]:components."so2"::float as so2,
+    JSON_DATA:list[0]:components."pm2_5"::float as pm2_5,
+    JSON_DATA:list[0]:components."pm10"::float as pm10,
+    JSON_DATA:list[0]:components."nh3"::float as nh3
+    
+from weather.raw.raw_json_data_air_pollution;
+
+
+create or replace dynamic table weather.silver.clean_forecast
+target_lag= '1 day'
+warehouse= 'COMPUTE_WH'
+refresh_mode=incremental --la otra opcion es full y hace las transformaciones a toda la tabla 
+initialize=on_create
+as
+select
+    TO_TIMESTAMP(f.value:dt) AS id,
+    JSON_DATA:city:name::string as city,
+    JSON_DATA:city:country::string as country,
+    JSON_DATA:city:population::float as population,
+    JSON_DATA:city:coord:lat::float as lat,
+    JSON_DATA:city:coord:lon::float as lon,
+    f.value:main:temp::float as temperature_celsius,
+    f.value:main:feels_like::float as feels_like,
+    f.value:main:humidity::float as humidity_percentage,
+    f.value:pop::float as probability_precipitation,
+    f.value:weather[0]:main::string as status,
+    f.value:weather[0]:description::string as description,
+    f.value:clouds:all::int as cloudiness_percentage,
+    f.value:wind:speed::float as wind_speed_mps
+
+from weather.raw.raw_json_data_forecast,
+lateral flatten(input => JSON_DATA:"list") f;
+
+-- al ser los ultimos 10 años, se deberia volver a ejecutar el pipe dentro de 10 años...
+create or replace dynamic table weather.silver.clean_daily_weather
+target_lag= '7 days'
+warehouse= 'COMPUTE_WH'
+refresh_mode=incremental --la otra opcion es full y hace las transformaciones a toda la tabla 
+initialize=on_create
+as
+select
+    TO_TIMESTAMP(f.value:date::string) as id,
+    f.value:tavg::float as avg_temperature_celsius,
+    f.value:tmin::float as min_temperate_celsius,
+    f.value:tmax::float as max_temperature_celsius,
+    f.value:prcp::float as daily_precipitation_mm,
+    f.value:snow::float as max_snow_depth_mm,
+    f.value:wdir::float as avg_wind_dir_degrees,
+    f.value:wspd::float as avg_wind_speed_kmph,
+    f.value:wpgt::float as peak_wind_gust_kmph,
+    f.value:pres::float as avg_sea_level_pressure_hpa,
+    f.value:tsun::float as total_daily_sunshine_minutes,
+    CASE 
+        WHEN 
+            ARRAY_CONTAINS(TO_VARIANT('87420'), w.$1:meta:stations) OR
+            ARRAY_CONTAINS(TO_VARIANT('87418'), w.$1:meta:stations) OR
+            ARRAY_CONTAINS(TO_VARIANT('87412'), w.$1:meta:stations)
+        THEN 'Mendoza'
+        WHEN 
+            ARRAY_CONTAINS(TO_VARIANT('87436'), w.$1:meta:stations) OR
+            ARRAY_CONTAINS(TO_VARIANT('87448'), w.$1:meta:stations)
+        THEN 'San Luis'
+        ELSE 'San Juan'
+    END AS city
+
+from weather.raw.raw_json_data_daily_weather w,
+lateral flatten(input => JSON_DATA:data) f;
+
+--algo a tener en cuenta, es q si borro los datos de la source table, se borra tambien lo de la dynamic, ya q es una vista o consecuencia de la source table
+
+
