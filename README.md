@@ -30,26 +30,15 @@ Extract data from an API, transform it, and load it into Power BI.
   #### 1st Pipeline
     This process consists of 6 copy data activities, 3 of which are used to extract current weather data and the other 3 to extract air pollution data and save them into a ADLSg2.
     This is done for each province in the Cuyo region (Mendoza, San Juan and San Luis) (Examples of API responses : [Response1](ADF/Response-APIs-json/weather.json) / [Response2](ADF/Response-APIs-json/air-pollution.json))
-    -  <img src="https://i.imgur.com/UzHY0bg.png" alt="1st pipeline">
+    <img src="https://i.imgur.com/UzHY0bg.png" alt="1st pipeline">
     
   #### 2nd Pipeline
-    Mediante 3 actividades copydata se extrea el forecast de las proximas 24 horas por provincia.(Examples of API responses : [Response](ADF/Response-APIs-json/forecast.json))
+    Through 3 copy data activities, the 24-hour weather forecast is extracted for each province.(Examples of API responses : [Response](ADF/Response-APIs-json/forecast.json))
     <img src="https://i.imgur.com/O9CEDAJ.png" alt="2nd pipeline">
 
-### 3rd Pipeline (databricks_pipeline)
-- Two Databricks notebooks are created:
-  1. The first ([link to notebook](pipelines/databricks/notebooks/Databricks_notebook_transform.ipynb)) transforms data (cleaning, filtering, enriching, etc.) and stores the transformed data in Delta format in the silver layer
-  2. The second ([link to notebook](pipelines/databricks/notebooks/Data_Modelling.ipynb)) implements dimensional modeling (fact and dimension tables) to address business needs, storing these tables in the gold layer
-  
-  Model View
-  
-  <img src="https://i.imgur.com/RahPcBQ.png" alt="view model">
-
-
-
-  These notebooks are added as separate activities in ADF
-  
-  <img src="https://i.imgur.com/CL67s0o.png" alt="Databricks pipeline">
+  #### 3rd Pipeline
+    There are 3 copy data activities that extract data from the https://dev.meteostat.net/api API, retrieving weather information from the past 10 years for each of the previously mentioned provinces. This is useful for analyzing climate variables and observing how they change over time.
+  <img src="https://i.imgur.com/MaWSYt7.png" alt="3rd pipeline">
 
 ### 4th Pipeline (ETL_Full_Load)
 - This pipeline groups all pipelines into a single pipeline using the Execute Pipeline activity
