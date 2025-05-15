@@ -1,0 +1,230 @@
+{
+    "name": "daily_weather",
+    "properties": {
+        "activities": [
+            {
+                "name": "daily_weather_mdz",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "RestSource",
+                        "httpRequestTimeout": "00:01:40",
+                        "requestInterval": "00.00:00:00.010",
+                        "requestMethod": "GET",
+                        "additionalHeaders": {
+                            "x-rapidapi-key": "c1c602a9fdmsha11233c36dd8002p15aa07jsn3ac029cd2680",
+                            "x-rapidapi-host": "meteostat.p.rapidapi.com"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "RestResource_daily_mdz",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('daily_weather_', formatDateTime(utcnow(), 'yyyy-MM'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/daily_weather/mendoza/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Wait1",
+                "type": "Wait",
+                "dependsOn": [
+                    {
+                        "activity": "daily_weather_mdz",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "waitTimeInSeconds": 5
+                }
+            },
+            {
+                "name": "daily_weather_sj",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Wait1",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "RestSource",
+                        "httpRequestTimeout": "00:01:40",
+                        "requestInterval": "00.00:00:00.010",
+                        "requestMethod": "GET",
+                        "additionalHeaders": {
+                            "x-rapidapi-key": "c1c602a9fdmsha11233c36dd8002p15aa07jsn3ac029cd2680",
+                            "x-rapidapi-host": "meteostat.p.rapidapi.com"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "RestResource_daily_sj",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('daily_weather_', formatDateTime(utcnow(), 'yyyy-MM'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/daily_weather/sanjuan/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "daily_weather_sl",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Wait1_copy1",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "RestSource",
+                        "httpRequestTimeout": "00:01:40",
+                        "requestInterval": "00.00:00:00.010",
+                        "requestMethod": "GET",
+                        "additionalHeaders": {
+                            "x-rapidapi-key": "c1c602a9fdmsha11233c36dd8002p15aa07jsn3ac029cd2680",
+                            "x-rapidapi-host": "meteostat.p.rapidapi.com"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "RestResource_daily_sl",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('daily_weather_', formatDateTime(utcnow(), 'yyyy-MM'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/daily_weather/sanluis/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Wait1_copy1",
+                "type": "Wait",
+                "dependsOn": [
+                    {
+                        "activity": "daily_weather_sj",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "waitTimeInSeconds": 5
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2025-05-14T20:11:10Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
