@@ -1,0 +1,31 @@
+-- https://www.youtube.com/watch?v=DpRXGscfi0o esto explica todo
+create or replace storage integration snowpipe_az_integration
+    TYPE = EXTERNAL_STAGE
+    STORAGE_PROVIDER = AZURE
+    ENABLED = TRUE
+    AZURE_TENANT_ID = '' --agregar tenant id
+    STORAGE_ALLOWED_LOCATIONS = ('azure://datalakeprojectweather.blob.core.windows.net/raw');
+
+desc storage integration snowpipe_az_integration;
+
+CREATE OR REPLACE STAGE weather.landing.weather_stage
+    STORAGE_INTEGRATION = snowpipe_az_integration
+	URL = 'azure://datalakeprojectweather.blob.core.windows.net/raw'
+	DIRECTORY = ( ENABLE = true )
+    FILE_FORMAT = weather.landing.json_format;
+--al crear el stage asi podemos usar event grid y que el snowpipe se active por notificaciones, mientras si usamos el stage con credenciales, el snowpipe o snowflake se fija cada ciertos minutos si se subio un nuevo file (menos eficiente)
+-- revisar si tenemos algo dentro del stage
+list @weather.landing.weather_stage;
+list @weather_stage/weather/; -- nos podemos mover dentro del stage
+
+-- debemos tambien integrar esto para que snowflake pueda recibir los eventos del event grid de azure cuando se sube un file nuevo
+
+CREATE OR REPLACE NOTIFICATION INTEGRATION weather_notification
+  TYPE = QUEUE
+  NOTIFICATION_PROVIDER = AZURE_STORAGE_QUEUE
+  ENABLED = TRUE
+  AZURE_STORAGE_QUEUE_PRIMARY_URI = 'https://datalakeprojectweather.queue.core.windows.net/snowflake-snowpipe-weather'
+  AZURE_TENANT_ID = '';--agregar tenant id
+
+-- de aqui debemos dar permisos o algo asi 
+desc notification integration weather_notification;
