@@ -29,12 +29,11 @@ Extract data from an API, transform it, and load it into Power BI.
 - The data is extracted in JSON format from two APIs (https://openweathermap.org/api and https://dev.meteostat.net/api) using Azure Data Factory (ADF) and stored in an Azure    Data Lake Storage Gen2 (ADLSg2).
   #### 1st Pipeline
     This process consists of 6 copy data activities, 3 of which are used to extract current weather data and the other 3 to extract air pollution data and save them into a   
-    ADLSg2. This is done for each province in the Cuyo region (Mendoza, San Juan and San Luis) (ejemplo de respuestas de la API:[Response1](ADF/Response-APIs-json/weather.json)/[Response2](ADF/Response-APIs-json/air-pollution.json))
+    ADLSg2. This is done for each province in the Cuyo region (Mendoza, San Juan and San Luis) (Examples of API responses : [Response1](ADF/Response-APIs-json/weather.json) / [Response2](ADF/Response-APIs-json/air-pollution.json))
     -  <img src="https://i.imgur.com/UzHY0bg.png" alt="1st pipeline">
     
   #### 2nd Pipeline
-    Mediante 3 actividades copydata se extrea
-    This array is used in a ForEach activity containing a CopyData activity that moves tables to the raw layer in ADLS Gen2
+    Mediante 3 actividades copydata se extrea el forecast de las proximas 24 horas por provincia.(Examples of API responses : [Response](ADF/Response-APIs-json/forecast.json))
     <img src="https://i.imgur.com/O9CEDAJ.png" alt="2nd pipeline">
 
 ### 3rd Pipeline (databricks_pipeline)
