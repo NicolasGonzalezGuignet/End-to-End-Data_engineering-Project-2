@@ -1,0 +1,473 @@
+{
+    "name": "weather_air-pollution",
+    "properties": {
+        "activities": [
+            {
+                "name": "weather_mdz",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DS_http_weather_mdz",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('weather_', formatDateTime(utcnow(), 'yyyy-MM-dd-HH'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/weather/hourly/mendoza/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/',\n  'DD=', formatDateTime(utcNow(), 'dd'), '/',\n  'HH=', formatDateTime(utcNow(), 'HH'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "air_pollution_mdz",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Wait1",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DS_http_air_pollution_mdz",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('air_pollution_', formatDateTime(utcnow(), 'yyyy-MM-dd-HH'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/air_pollution/hourly/mendoza/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/',\n  'DD=', formatDateTime(utcNow(), 'dd'), '/',\n  'HH=', formatDateTime(utcNow(), 'HH'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Wait1",
+                "type": "Wait",
+                "dependsOn": [
+                    {
+                        "activity": "weather_mdz",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "waitTimeInSeconds": 5
+                }
+            },
+            {
+                "name": "weather_sj",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Wait1_copy2",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DS_http_weather_sj",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('weather_', formatDateTime(utcnow(), 'yyyy-MM-dd-HH'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/weather/hourly/sanjuan/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/',\n  'DD=', formatDateTime(utcNow(), 'dd'), '/',\n  'HH=', formatDateTime(utcNow(), 'HH'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Wait1_copy1",
+                "type": "Wait",
+                "dependsOn": [
+                    {
+                        "activity": "weather_sj",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "waitTimeInSeconds": 5
+                }
+            },
+            {
+                "name": "air_pollution_sj",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Wait1_copy1",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DS_http_air_pollution_sj",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('air_pollution_', formatDateTime(utcnow(), 'yyyy-MM-dd-HH'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/air_pollution/hourly/sanjuan/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/',\n  'DD=', formatDateTime(utcNow(), 'dd'), '/',\n  'HH=', formatDateTime(utcNow(), 'HH'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "weather_sl",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Wait1_copy3",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DS_http_weather_sl",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('weather_', formatDateTime(utcnow(), 'yyyy-MM-dd-HH'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/weather/hourly/sanluis/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/',\n  'DD=', formatDateTime(utcNow(), 'dd'), '/',\n  'HH=', formatDateTime(utcNow(), 'HH'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Wait1_copy1_copy1",
+                "type": "Wait",
+                "dependsOn": [
+                    {
+                        "activity": "weather_sl",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "waitTimeInSeconds": 5
+                }
+            },
+            {
+                "name": "air_pollution_sl",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Wait1_copy1_copy1",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DS_http_air_pollution_sl",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('air_pollution_', formatDateTime(utcnow(), 'yyyy-MM-dd-HH'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/air_pollution/hourly/sanluis/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/',\n  'DD=', formatDateTime(utcNow(), 'dd'), '/',\n  'HH=', formatDateTime(utcNow(), 'HH'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Wait1_copy2",
+                "type": "Wait",
+                "dependsOn": [
+                    {
+                        "activity": "air_pollution_mdz",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "waitTimeInSeconds": 5
+                }
+            },
+            {
+                "name": "Wait1_copy3",
+                "type": "Wait",
+                "dependsOn": [
+                    {
+                        "activity": "air_pollution_sj",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "waitTimeInSeconds": 5
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2025-05-14T20:11:10Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
