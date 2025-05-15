@@ -1,0 +1,88 @@
+-- aqui deberia hacer las tablas dynamic y listo, conectar con power bi, hacer algun dashboard y listo.
+create or replace dynamic table weather.gold.fact_table_weather_air_pollution
+target_lag= '1 hour'
+warehouse= 'COMPUTE_WH'
+refresh_mode=incremental
+initialize=on_create
+as
+select
+row_number() over (order by w.id, w.lat) as row_key,
+c.city_key,
+d.date_key,
+w.status,
+w.description,
+w.temperature_celsius,
+w.feels_like,
+w.humidity_percentage,
+w.wind_speed_mps,
+w.cloudiness_percentage,
+w.visibility_meters,
+p.air_quality_index,
+p.co,
+p.no,
+p.no2,
+p.o3,
+p.so2,
+p.pm2_5,
+p.pm10,
+p.nh3
+from weather.silver.clean_air_pollution p 
+join weather.silver.clean_weather w on p.id = w.id and p.lat = w.lat
+join weather.gold.dim_city c on w.city = c.city_name
+join weather.gold.dim_datetime d on p.id = d.datetime;
+
+
+
+
+create or replace dynamic table weather.gold.fact_table_forecast
+target_lag= '1 day'
+warehouse= 'COMPUTE_WH'
+refresh_mode=incremental
+initialize=on_create
+as
+select
+row_number() over (order by f.id, f.city) as row_key,
+c.city_key,
+d.date_key,
+f.status,
+f.description,
+f.temperature_celsius,
+f.feels_like,
+f.humidity_percentage,
+f.probability_precipitation,
+f.cloudiness_percentage,
+f.wind_speed_mps,
+
+from weather.silver.clean_forecast f
+join weather.gold.dim_city c on f.city = c.city_name
+join weather.gold.dim_datetime d on f.id = d.datetime;
+
+
+
+create or replace dynamic table weather.gold.fact_table_daily_weather
+target_lag= '7 days'
+warehouse= 'COMPUTE_WH'
+refresh_mode=incremental
+initialize=on_create
+as
+select
+row_number() over (order by da.id, da.city) as row_key,
+c.city_key,
+d.date_key,
+da.avg_temperature_celsius,
+da.min_temperate_celsius,
+da.max_temperature_celsius,
+da.daily_precipitation_mm,
+da.max_snow_depth_mm,
+da.avg_wind_dir_degrees,
+da.avg_wind_speed_kmph,
+da.peak_wind_gust_kmph,
+da.avg_sea_level_pressure_hpa,
+da.total_daily_sunshine_minutes
+
+from weather.silver.clean_daily_weather da
+join weather.gold.dim_city c on da.city = c.city_name
+join weather.gold.dim_datetime d on da.id = d.datetime;
+
+
+
