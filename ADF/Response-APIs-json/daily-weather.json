@@ -1,0 +1,142 @@
+{
+    "meta": {
+        "generated": "2025-04-29 00:31:11",
+        "stations": [
+            "87420",
+            "87418",
+            "87412"
+        ]
+    },
+    "data": [
+        {
+            "date": "2015-06-01 00:00:00",
+            "tavg": 12.9,
+            "tmin": 4.7,
+            "tmax": 20.0,
+            "prcp": null,
+            "snow": null,
+            "wdir": null,
+            "wspd": 3.6,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        },
+        {
+            "date": "2015-06-02 00:00:00",
+            "tavg": 13.2,
+            "tmin": 5.7,
+            "tmax": 20.7,
+            "prcp": null,
+            "snow": null,
+            "wdir": null,
+            "wspd": 4.2,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        },
+        {
+            "date": "2015-06-03 00:00:00",
+            "tavg": 13.8,
+            "tmin": 6.4,
+            "tmax": 23.2,
+            "prcp": null,
+            "snow": null,
+            "wdir": null,
+            "wspd": 6.8,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        },
+        {
+            "date": "2015-06-04 00:00:00",
+            "tavg": 14.1,
+            "tmin": 5.2,
+            "tmax": 23.5,
+            "prcp": null,
+            "snow": null,
+            "wdir": null,
+            "wspd": 4.2,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        },
+        {
+            "date": "2015-06-05 00:00:00",
+            "tavg": 14.0,
+            "tmin": 5.0,
+            "tmax": 26.0,
+            "prcp": null,
+            "snow": null,
+            "wdir": null,
+            "wspd": 4.8,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        },
+        {
+            "date": "2015-06-06 00:00:00",
+            "tavg": 19.8,
+            "tmin": 5.8,
+            "tmax": 26.8,
+            "prcp": null,
+            "snow": null,
+            "wdir": 155.0,
+            "wspd": 10.8,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        },
+        {
+            "date": "2015-06-07 00:00:00",
+            "tavg": 15.1,
+            "tmin": 8.6,
+            "tmax": 23.6,
+            "prcp": null,
+            "snow": null,
+            "wdir": null,
+            "wspd": 6.0,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        },
+        {
+            "date": "2015-06-08 00:00:00",
+            "tavg": 12.9,
+            "tmin": 6.4,
+            "tmax": 21.0,
+            "prcp": null,
+            "snow": null,
+            "wdir": null,
+            "wspd": 3.7,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        },
+        {
+            "date": "2015-06-09 00:00:00",
+            "tavg": 12.8,
+            "tmin": 6.7,
+            "tmax": 18.9,
+            "prcp": null,
+            "snow": null,
+            "wdir": null,
+            "wspd": 4.6,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        },
+        {
+            "date": "2015-06-10 00:00:00",
+            "tavg": 11.7,
+            "tmin": 9.7,
+            "tmax": 15.4,
+            "prcp": null,
+            "snow": null,
+            "wdir": null,
+            "wspd": 10.7,
+            "wpgt": null,
+            "pres": null,
+            "tsun": null
+        }
+    ]
+}
