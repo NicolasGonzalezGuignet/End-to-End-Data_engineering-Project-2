@@ -1,0 +1,24 @@
+{
+    "name": "hourly_trigger",
+    "properties": {
+        "annotations": [],
+        "runtimeState": "Started",
+        "pipelines": [
+            {
+                "pipelineReference": {
+                    "referenceName": "weather_air-pollution",
+                    "type": "PipelineReference"
+                }
+            }
+        ],
+        "type": "ScheduleTrigger",
+        "typeProperties": {
+            "recurrence": {
+                "frequency": "Hour",
+                "interval": 1,
+                "startTime": "2025-05-09T21:00:00",
+                "timeZone": "E. South America Standard Time"
+            }
+        }
+    }
+}
