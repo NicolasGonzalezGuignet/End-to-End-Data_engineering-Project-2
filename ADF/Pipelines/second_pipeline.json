@@ -1,0 +1,230 @@
+{
+    "name": "forecast_weather",
+    "properties": {
+        "activities": [
+            {
+                "name": "forecast_mdz",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DS_http_forecast_mdz",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('forecast_', formatDateTime(utcnow(), 'yyyy-MM-dd'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/forecast/daily/mendoza/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/',\n  'DD=', formatDateTime(utcNow(), 'dd'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "forecast_sj",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Wait1",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DS_http_forecast_sj",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('forecast_', formatDateTime(utcnow(), 'yyyy-MM-dd'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/forecast/daily/sanjuan/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/',\n  'DD=', formatDateTime(utcNow(), 'dd'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "forecast_sl",
+                "type": "Copy",
+                "dependsOn": [
+                    {
+                        "activity": "Wait1_copy1",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "HttpReadSettings",
+                            "requestMethod": "GET"
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "sink": {
+                        "type": "JsonSink",
+                        "storeSettings": {
+                            "type": "AzureBlobFSWriteSettings"
+                        },
+                        "formatSettings": {
+                            "type": "JsonWriteSettings"
+                        }
+                    },
+                    "enableStaging": false
+                },
+                "inputs": [
+                    {
+                        "referenceName": "DS_http_forecast_sl",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "Json1",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "filename": {
+                                "value": "@concat('forecast_', formatDateTime(utcnow(), 'yyyy-MM-dd'), '.json')",
+                                "type": "Expression"
+                            },
+                            "directory": {
+                                "value": "@concat(\n  '/forecast/daily/sanluis/',\n  'YYYY=', formatDateTime(utcNow(), 'yyyy'), '/',\n  'MM=', formatDateTime(utcNow(), 'MM'), '/',\n  'DD=', formatDateTime(utcNow(), 'dd'), '/'\n)",
+                                "type": "Expression"
+                            },
+                            "file_system": "raw"
+                        }
+                    }
+                ]
+            },
+            {
+                "name": "Wait1",
+                "type": "Wait",
+                "dependsOn": [
+                    {
+                        "activity": "forecast_mdz",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "waitTimeInSeconds": 5
+                }
+            },
+            {
+                "name": "Wait1_copy1",
+                "type": "Wait",
+                "dependsOn": [
+                    {
+                        "activity": "forecast_sj",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "waitTimeInSeconds": 5
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2025-05-14T20:11:10Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}
