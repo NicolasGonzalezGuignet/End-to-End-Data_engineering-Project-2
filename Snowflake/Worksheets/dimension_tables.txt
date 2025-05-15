@@ -1,0 +1,50 @@
+CREATE OR REPLACE transient TABLE weather.gold.dim_datetime AS
+WITH hours AS (
+  SELECT 
+    SEQ4() AS hour_offset,
+    DATEADD(HOUR, SEQ4(), '2015-01-01 00:00:00') AS datetime
+  FROM TABLE(GENERATOR(ROWCOUNT => 113880))  -- ~13 años * 365 días * 24 horas
+)
+SELECT
+  ROW_NUMBER() OVER (ORDER BY datetime) AS date_key,
+  datetime,
+  EXTRACT(HOUR FROM datetime) AS hour,
+  EXTRACT(DAY FROM datetime) AS day,
+  EXTRACT(MONTH FROM datetime) AS month,
+  TRIM(TO_CHAR(datetime, 'Month')) AS month_name,
+  EXTRACT(YEAR FROM datetime) AS year,
+  EXTRACT(QUARTER FROM datetime) AS quarter,
+  EXTRACT(WEEK FROM datetime) AS week,
+  EXTRACT(DAYOFWEEK FROM datetime) AS day_of_week,  -- 1=Sunday, 2=Monday...
+  CASE WHEN DAYOFWEEK(datetime) IN (1, 7) THEN TRUE ELSE FALSE END AS is_weekend,
+  CASE
+    WHEN MONTH(datetime) IN (12, 1, 2) THEN 'Summer'
+    WHEN MONTH(datetime) IN (3, 4, 5) THEN 'Autumn'
+    WHEN MONTH(datetime) IN (6, 7, 8) THEN 'Winter'
+    WHEN MONTH(datetime) IN (9, 10, 11) THEN 'Spring'
+  END AS season,
+  CASE WHEN TO_CHAR(datetime, 'HH24:MI:SS') = '00:00:00' THEN TRUE ELSE FALSE END AS midnight
+FROM hours
+WHERE datetime <= '2027-12-31 23:00:00';
+
+
+
+
+CREATE OR REPLACE transient TABLE weather.gold.dim_city (
+  city_key INT AUTOINCREMENT PRIMARY KEY,
+  city_name STRING,
+  lat float,
+  lon float,
+  region STRING DEFAULT 'Cuyo',
+  country STRING DEFAULT 'Argentina',
+  timezone STRING DEFAULT 'UTC-03:00',
+  elevation FLOAT,
+  population float
+);
+
+INSERT INTO dim_city (city_name,lat,lon,elevation,population)
+VALUES
+  ('Mendoza',-32.8895,-68.8458,746,876884),
+  ('San Juan',-31.5387,-68.5363,650,447048),
+  ('San Luis',-33.303,-66.3383,711,183982);
+
