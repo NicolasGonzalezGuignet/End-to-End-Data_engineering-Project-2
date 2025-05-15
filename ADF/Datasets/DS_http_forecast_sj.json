@@ -1,0 +1,22 @@
+{
+    "name": "DS_http_forecast_sj",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "HttpServer1",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "Json",
+        "typeProperties": {
+            "location": {
+                "type": "HttpServerLocation",
+                "relativeUrl": {
+                    "value": "/data/2.5/forecast?lat=-31.538660&lon=-68.536301&units=metric&lang=en&cnt=8&appid=23b4df9e1c971d8071e8e9e71d883d63",
+                    "type": "Expression"
+                }
+            }
+        },
+        "schema": {}
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}
