@@ -1,30 +1,27 @@
 # End-to-End Data Engineering Project using Azure and Snowflake
 
 ## Summary
-In this project, data is extracted from various sources including a website (via web scraping) and an Azure SQL database (OLTP database). Data ingestion is performed using Azure Data Factory, and the data is stored in a data lake (ADLS Gen2). This [datalake](datalake/datalake_structure.txt) contains 3 layers (raw/silver/gold) based on the Medallion Architecture <img src="https://i.imgur.com/dMMYxvw.png" alt="Medallion Architecture">, where data is initially stored in its native format (CSV) in the raw layer. Then, transformations (filtering, cleaning, etc.) are applied in Databricks and stored in Delta format in the silver layer. Finally, dimension modeling is performed to address business needs (using SQL in Databricks), and the resulting dimension and fact tables are stored in the gold layer. The tables are then made available in Databricks SQL for Power BI connectivity, enabling end users to visualize the data and make decisions. The entire process is orchestrated using Azure Data Factory.
+In this project, data is extracted from various API (Weather API from openweathermap.org and Meteostat API). Data ingestion is performed using Azure Data Factory, and the data is stored in a data lake (ADLS Gen2), where data is initially stored in its native format (JSON). Then, the processing and storage of the data is handled through Snowflake. First, an external stage is created to visualize the data without storing it in Snowflake, using the $1 notation. Afterwards, Snowpipes are created, which, through Event Grid notifications in Azure (blob created), enable incremental ingestion into a raw layer. In this layer, the data is stored in table format, where the entire JSON file and its metadata are saved. Next, using dynamic tables (which allow dynamic transformations and reading only the new records for incremental load), we unnest the arrays in the JSON files (using the flatten function), clean and filter the data, and obtain a table with structured data. Finally, a small data warehouse is created with 2 dimension tables and 3 fact tables. This layer or schema is then connected to Power BI to create interactive dashboards.
 
 ## Tools and Technologies
 - **Cloud**: Azure
-- **OLTP Database**: Azure SQL
-- **Processing**: Databricks
-- **Storage**: Azure Data Lake Storage Gen 2
+- **Processing**: Snowflake
+- **Storage**: Azure Data Lake Storage Gen 2 and Snowflake
 - **Business Intelligence Dashboard**: Power BI
-- **Data Pipelines/Orchestrator**: Azure Data Factory
+- **Data Pipelines/Orchestrator**: Azure Data Factory and Snowflake (Snowpipes and Dynamic Tables)
 
 ## Project Architecture
 Here you can visualize the completed project:
-<img src="https://i.imgur.com/jDJ8lNT.png" alt="architecture">
+<img src="https://i.imgur.com/NBxyEbc.png" alt="architecture">
 
 ## Objectives
-Extract data from a website and an OLTP database, transform it, and load it into Power BI.
+Extract data from an API, transform it, and load it into Power BI.
 
 ## Azure Provisioned Resources
 - Azure Data Factory (ADF)
-- Azure Databricks
 - Storage Account (ADLS Gen2)
-- Azure SQL Database
-- Azure SQL Server
-- Function App (Azure Function)
+- Snowflake Instance
+- Azure Event Grid Notifications
 
 ## Process Description
 
