@@ -1,0 +1,22 @@
+{
+    "name": "DS_http_air_pollution_sl",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "HttpServer1",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "Json",
+        "typeProperties": {
+            "location": {
+                "type": "HttpServerLocation",
+                "relativeUrl": {
+                    "value": "/data/2.5/air_pollution?lat=-33.302950&lon=-66.338279&units=metric&lang=en&cnt=8&appid=23b4df9e1c971d8071e8e9e71d883d63",
+                    "type": "Expression"
+                }
+            }
+        },
+        "schema": {}
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}
