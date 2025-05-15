@@ -1,7 +1,7 @@
 # End-to-End Data Engineering Project using Azure and Snowflake
 
 ## Summary
-In this project, data is extracted from various API (Weather API from openweathermap.org and Meteostat API). Data ingestion is performed using Azure Data Factory, and the data is stored in a data lake (ADLS Gen2), where data is initially stored in its native format (JSON). Then, the processing and storage of the data is handled through Snowflake. First, an external stage is created to visualize the data without storing it in Snowflake, using the $ notation. Afterwards, Snowpipes are created, which, through Event Grid notifications in Azure (blob created), enable incremental ingestion into a raw layer. In this layer, the data is stored in table format, where the entire JSON file and its metadata are saved. Next, using dynamic tables (which allow dynamic transformations and reading only the new records for incremental load), we unnest the arrays in the JSON files (using the flatten function), clean and filter the data, and obtain a table with structured data. Finally, a small data warehouse is created with 2 dimension tables and 3 fact tables. This layer or schema is then connected to Power BI to create interactive dashboards.
+In this project, data is extracted from various API (Weather API from openweathermap.org and Meteostat API) to create an interactive dashboard with the weather forecast for the next 24 hours, view the current weather conditions, and analyze climate variables from the past 10 years. Data ingestion is performed using Azure Data Factory, and the data is stored in a data lake (ADLS Gen2), where data is initially stored in its native format (JSON). Then, the processing and storage of the data is handled through Snowflake. First, an external stage is created to visualize the data without storing it in Snowflake, using the $ notation. Afterwards, Snowpipes are created, which, through Event Grid notifications in Azure (blob created), enable incremental ingestion into a raw layer. In this layer, the data is stored in table format, where the entire JSON file and its metadata are saved. Next, using dynamic tables (which allow dynamic transformations and reading only the new records for incremental load), we unnest the arrays in the JSON files (using the flatten function), clean and filter the data, and obtain a table with structured data. Finally, a small data warehouse is created with 2 dimension tables and 3 fact tables. This layer or schema is then connected to Power BI to create interactive dashboards.
 
 ## Tools and Technologies
 - **Cloud**: Azure
@@ -25,24 +25,17 @@ Extract data from an API, transform it, and load it into Power BI.
 
 ## Process Description
 
-### 1st Pipeline (ingest_http_rebrickable)
-- An [Azure Function](scripts/azure-function/web_scraping.py) activity is created to perform web scraping on the page "https://rebrickable.com/downloads/" to obtain download links for the LEGO catalog database.
-
-  This database contains information such as:
-  - Official LEGO items - Sets, Parts and Minifigs (no B-Models, Sub-Sets, MOCs)
-  - Sets and Minifigs contain one or more Inventories (inventories.csv)
-  - Inventories can contain Sets (inventory_sets.csv) and/or Parts (inventory_parts.csv) and/or Minifigs (inventory_minifigs.csv)
-  - Part Relationship rel_types are: (P)rint, Pai(R), Su(B)-Part, (M)old, Pa(T)tern, (A)lternate
-  <img src="https://i.imgur.com/LYDhQID.png" alt="Database content">
-  
-- Another activity converts the string of links from the previous activity into an array for processing in the next activity
-- A ForEach activity containing a CopyData activity downloads the links and stores them in the raw layer of ADLS Gen2
-<img src="https://i.imgur.com/efTcCUZ.png" alt="Pipeline 1">
-
-### 2nd Pipeline (ingest_oltp_db_rebrickable)
-- A LookUp activity retrieves table names from the [oltp-database](scripts/oltp-database/) (scripts to generate tables, data, and import data), returning an array of table names
-- This array is used in a ForEach activity containing a CopyData activity that moves tables to the raw layer in ADLS Gen2
-<img src="https://i.imgur.com/aONY9Sr.png" alt="Pipeline 2">
+### Ingest data from APIs
+- The data is extracted in JSON format from two APIs (https://openweathermap.org/api and https://dev.meteostat.net/api) using Azure Data Factory (ADF) and stored in an Azure    Data Lake Storage Gen2 (ADLSg2).
+  #### 1st Pipeline
+    This process consists of 6 copy data activities, 3 of which are used to extract current weather data and the other 3 to extract air pollution data and save them into a   
+    ADLSg2. This is done for each province in the Cuyo region (Mendoza, San Juan and San Luis) (ejemplo de respuestas de la API:[Response1](ADF/Response-APIs-json/weather.json)/[Response2](ADF/Response-APIs-json/air-pollution.json))
+    -  <img src="https://i.imgur.com/UzHY0bg.png" alt="1st pipeline">
+    
+  #### 2nd Pipeline
+    Mediante 3 actividades copydata se extrea
+    This array is used in a ForEach activity containing a CopyData activity that moves tables to the raw layer in ADLS Gen2
+    <img src="https://i.imgur.com/O9CEDAJ.png" alt="2nd pipeline">
 
 ### 3rd Pipeline (databricks_pipeline)
 - Two Databricks notebooks are created:
@@ -51,7 +44,7 @@ Extract data from an API, transform it, and load it into Power BI.
   
   Model View
   
-  <img src="https://i.imgur.com/6nABICN.png" alt="view model">
+  <img src="https://i.imgur.com/RahPcBQ.png" alt="view model">
 
 
 
