@@ -37,12 +37,14 @@ Extract data from an API, transform it, and load it into Power BI.
     <img src="https://i.imgur.com/O9CEDAJ.png" alt="2nd pipeline">
 
   #### 3rd Pipeline
-    There are 3 copy data activities that extract data from the https://dev.meteostat.net/api API, retrieving weather information from the past 10 years for each of the previously mentioned provinces. This is useful for analyzing climate variables and observing how they change over time.
+    There are 3 copy data activities that extract data from the https://dev.meteostat.net/api API, retrieving weather information from the past 10 years for each of the previously mentioned provinces. This is useful for analyzing climate variables and observing how they change over time. (Examples of API responses : [Response](ADF/Response-APIs-json/daily-weather.json))
   <img src="https://i.imgur.com/MaWSYt7.png" alt="3rd pipeline">
 
-### 4th Pipeline (ETL_Full_Load)
-- This pipeline groups all pipelines into a single pipeline using the Execute Pipeline activity
-  <img src="https://i.imgur.com/uUBEYPB.png" alt="Master pipeline">
+  #### Linked Services / Datasets / Triggers
+    Aqui se muestran los linked services, datasets y triggers utilizados para los pipelines
+    <img src="https://i.imgur.com/0HDfmV6.png" alt="Ls"> [ls](ADF/Linked_Services)
+    <img src="https://i.imgur.com/2dJALwo.png" alt="Ds"> [ds](ADF/Datasets)
+    <img src="https://i.imgur.com/osP9mQU.png" alt="Trigg"> [trigg](ADF/Triggers)
 
 ### 5. Power BI Connection [Dashboard](power-bi/dashboard.png)
 - A connection is established between the Databricks "gold" database and Power BI for real-time data visualization
