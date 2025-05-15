@@ -1,0 +1,19 @@
+{
+    "name": "RestResource_daily_sl",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "RestService1",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "RestResource",
+        "typeProperties": {
+            "relativeUrl": {
+                "value": "/point/daily?lat=-33.302950&lon=-66.338279&start=2015-06-01&end=2025-04-28",
+                "type": "Expression"
+            }
+        },
+        "schema": []
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}
