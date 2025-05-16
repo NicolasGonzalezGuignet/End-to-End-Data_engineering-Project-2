@@ -60,18 +60,25 @@ Extract data from an API, transform it, and load it into Power BI.
     Here we have a trigger (daily_trigger) applied to Pipeline 2, which runs daily, while the other trigger runs hourly (hourly_trigger) (this can easily be adjusted, for example, to every 5 minutes) and is used for Pipeline 1. As for Pipeline 3, since it handles a bulk load of the past 10 years, a trigger is not necessary—it only needs to be executed once.
     
 
-### 2. Snowflake [Dashboard](power-bi/dashboard.png)
+### 2. Snowflake
   - As a first step, we need to create a storage integration between Snowflake and Azure. This is primarily a secure permission/authentication mechanism between Snowflake and an external storage service (in this case, Azure). Next, we create an external stage, which is an object that points to a specific location of the external files. Additionally, a notification integration is created, as it is required to automate Snowpipes.
     - This can be seen in the following SQL worksheet: [storage_integration.txt](Snowflake/Worksheets/storage_integration.txt)
   - Then, we need to create the internal storage area within Snowflake:
     - We create the "weather" database, and then create several schemas ("landing", "raw", "silver", and "gold").
     - We create a file format. 
     - Once the external stage and landing layer are set up, we can query the data without storing it in Snowflake, and we can navigate through the JSON using the $ notation.
-    - The implementation is available in the following worksheet:x [schema_creation.txt](Snowflake/Worksheets/schema_creation.txt)
+    - The implementation is available in the following worksheet: [schema_creation.txt](Snowflake/Worksheets/schema_creation.txt)
   - Next, we create the tables for the raw layer. Four tables are created, each storing the full JSON object in one column, along with the filename and the processing timestamp (one for each object of study).
-  - Then, we proceed to create the Snowpipes, which will ingest data from Azure into Snowflake whenever a blob is created inside a container, using Event Grid notifications.
+    <img src="https://i.imgur.com/tqXEKJ2.png" alt="table example">
+    - Then, we proceed to create the Snowpipes, which will ingest data from Azure into Snowflake whenever a blob is created inside a container, using Event Grid notifications.
     - The steps are illustrated in the following worksheet: [raw_layer.txt](Snowflake/Worksheets/raw_layer.txt)
-  <img src="https://i.imgur.com/OpWGgAq.png" alt="Power BI connection">
+  - Then, we create the dynamic tables in the silver layer, which have the capability to either process all the data from the source table (full load) or only process the new data (incremental load). [Snowflake Dynamic Tables](https://docs.snowflake.com/en/user-guide/dynamic-tables-intro)  are tables that automatically update based on a defined query. They work like materialized views that stay continuously or periodically refreshed, allowing incremental loads, automated transformations, and simplifying the development of data pipelines without the need for additional code.
+    - SQL code for this step is provided in the following worksheet: [silver_layer.txt](Snowflake/Worksheets/silver_layer.txt)
+    <img src="https://i.imgur.com/aIY5myU.png" alt="table example">
+  - Finally, we create the dimension tables (which will be transient tables since they don't change) and the fact tables, which will also be dynamic tables, as they are derived from the tables created in the silver layer.
+    - The corresponding scripts can be found here: [dimension_tables.txt](Snowflake/Worksheets/dimension_tables.txt) / [gold_layer.txt](Snowflake/Worksheets/gold_layer.txt)
+    - La vista del modelo se puede visualizar aqui:
+    - <img src="https://i.imgur.com/i5i5nGG.png" alt="table example">
 
 
 
