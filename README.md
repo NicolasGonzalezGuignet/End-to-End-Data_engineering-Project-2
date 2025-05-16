@@ -19,10 +19,11 @@ Extract data from an API, transform it, and load it into Power BI.
 
 ## Provisioned Resources
   ### Azure
-    - Azure Data Factory (ADF)
-    - Storage Account (ADLS Gen2)
-    - Azure Event Grid Notifications
-  - Snowflake Instance
+   - Azure Data Factory (ADF)
+   - Storage Account (ADLS Gen2)
+   - Azure Event Grid Notifications
+  ### Snowflake
+   - Snowflake Instance
 
 ## Process Description
 
