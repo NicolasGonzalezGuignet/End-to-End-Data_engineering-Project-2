@@ -75,7 +75,7 @@ Extract data from an API, transform it, and load it into Power BI.
   - Then, we create the dynamic tables in the silver layer, which have the capability to either process all the data from the source table (full load) or only process the new data (incremental load). [Snowflake Dynamic Tables](https://docs.snowflake.com/en/user-guide/dynamic-tables-intro)  are tables that automatically update based on a defined query. They work like materialized views that stay continuously or periodically refreshed, allowing incremental loads, automated transformations, and simplifying the development of data pipelines without the need for additional code.
     - SQL code for this step is provided in the following worksheet: [silver_layer.txt](Snowflake/Worksheets/silver_layer.txt)
     <img src="https://i.imgur.com/aIY5myU.png" alt="table example">
-  - Finally, we create the dimension tables (which will be transient tables since they don't change) and the fact tables, which will also be dynamic tables, as they are derived from the tables created in the silver layer.
+  - Finally, we create the dimension tables and the fact tables, which will also be dynamic tables, as they are derived from the tables created in the silver layer.
     - The corresponding scripts can be found here: [dimension_tables.txt](Snowflake/Worksheets/dimension_tables.txt) / [gold_layer.txt](Snowflake/Worksheets/gold_layer.txt)
     - La vista del modelo se puede visualizar aqui:
     - <img src="https://i.imgur.com/i5i5nGG.png" alt="table example">
