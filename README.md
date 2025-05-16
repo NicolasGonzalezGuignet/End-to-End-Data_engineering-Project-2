@@ -42,17 +42,21 @@ Extract data from an API, transform it, and load it into Power BI.
 
   #### Linked Services / Datasets / Triggers
     Here are the linked services, datasets, and triggers used for the pipelines.
-    <img src="https://i.imgur.com/0HDfmV6.png" alt="Ls">
-    
-  [linked services](ADF/Linked_Services)
+
+    [Linked Services](ADF/Linked_Services)
   
+    <img src="https://i.imgur.com/0HDfmV6.png" alt="Ls">
+
+    [Datasets](ADF/Datasets)
+      
     <img src="https://i.imgur.com/2dJALwo.png" alt="Ds">
-    
-  [datasets](ADF/Datasets)
+
+     [Triggers](ADF/Triggers)    
   
     <img src="https://i.imgur.com/osP9mQU.png" alt="Trigg">
+
+    Here we have a trigger (daily_trigger) applied to Pipeline 2, which runs daily, while the other trigger runs hourly (hourly_trigger) (this can easily be adjusted, for example, to every 5 minutes) and is used for Pipeline 1. As for Pipeline 3, since it handles a bulk load of the past 10 years, a trigger is not necessary—it only needs to be executed once.
     
-  [triggers](ADF/Triggers)
 
 ### 5. Power BI Connection [Dashboard](power-bi/dashboard.png)
 - A connection is established between the Databricks "gold" database and Power BI for real-time data visualization
