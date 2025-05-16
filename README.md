@@ -81,8 +81,8 @@ Extract data from an API, transform it, and load it into Power BI.
     - The corresponding scripts can be found here: [dimension_tables.txt](Snowflake/Worksheets/dimension_tables.txt) / [gold_layer.txt](Snowflake/Worksheets/gold_layer.txt)
 
 ### 3. Connect Snowflake with Power BI
-- En este paso debemos conectar el schema "gold" con power bi, de esta forma podremos realizar dashboards interactivos e interactuar con los datos en tiempo real.
- - La vista del modelo se puede visualizar aqui:
+- In this step, we need to connect the "gold" schema to Power BI. This allows us to create interactive dashboards and work with the data in real time.
+ - The model view can be seen here:
   - <img src="https://i.imgur.com/i5i5nGG.png" alt="table example">
  
 
