@@ -79,10 +79,12 @@ Extract data from an API, transform it, and load it into Power BI.
     <img src="https://i.imgur.com/aIY5myU.png" alt="table example">
   - Finally, we create the dimension tables and the fact tables, which will also be dynamic tables, as they are derived from the tables created in the silver layer.
     - The corresponding scripts can be found here: [dimension_tables.txt](Snowflake/Worksheets/dimension_tables.txt) / [gold_layer.txt](Snowflake/Worksheets/gold_layer.txt)
-    - La vista del modelo se puede visualizar aqui:
-    - <img src="https://i.imgur.com/i5i5nGG.png" alt="table example">
 
-
+### 3. Connect Snowflake with Power BI
+- En este paso debemos conectar el schema "gold" con power bi, de esta forma podremos realizar dashboards interactivos e interactuar con los datos en tiempo real.
+ - La vista del modelo se puede visualizar aqui:
+  - <img src="https://i.imgur.com/i5i5nGG.png" alt="table example">
+ 
 
 Here you can see the [video](https://drive.google.com/file/d/1g6jlUvcwRXHP9ZWVMlkXtklbWZ4iJ9AJ/view?usp=sharing) that documents the implementation of the ETL.
 
