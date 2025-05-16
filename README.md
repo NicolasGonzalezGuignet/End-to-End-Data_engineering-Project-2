@@ -25,8 +25,10 @@ Extract data from an API, transform it, and load it into Power BI.
 
 ## Process Description
 
-### Ingest data from APIs
+### 1. Ingest data from APIs
 - The data is extracted in JSON format from two APIs (https://openweathermap.org/api and https://dev.meteostat.net/api) using Azure Data Factory (ADF) and stored in an Azure    Data Lake Storage Gen2 (ADLSg2).
+- In this [File](ADF/arm_template.zip) you can see the ARM template to provision a similar workspace in ADF.
+
   #### 1st Pipeline
     This process consists of 6 copy data activities, 3 of which are used to extract current weather data and the other 3 to extract air pollution data and save them into a ADLSg2.
     This is done for each province in the Cuyo region (Mendoza, San Juan and San Luis) (Examples of API responses : [Response1](ADF/Response-APIs-json/weather.json) / [Response2](ADF/Response-APIs-json/air-pollution.json))
@@ -58,11 +60,19 @@ Extract data from an API, transform it, and load it into Power BI.
     Here we have a trigger (daily_trigger) applied to Pipeline 2, which runs daily, while the other trigger runs hourly (hourly_trigger) (this can easily be adjusted, for example, to every 5 minutes) and is used for Pipeline 1. As for Pipeline 3, since it handles a bulk load of the past 10 years, a trigger is not necessary—it only needs to be executed once.
     
 
-### 5. Power BI Connection [Dashboard](power-bi/dashboard.png)
-- A connection is established between the Databricks "gold" database and Power BI for real-time data visualization
+### 2. Snowflake [Dashboard](power-bi/dashboard.png)
+  - As a first step, we need to create a storage integration between Snowflake and Azure. This is primarily a secure permission/authentication mechanism between Snowflake and an external storage service (in this case, Azure). Next, we create an external stage, which is an object that points to a specific location of the external files. Additionally, a notification integration is created, as it is required to automate Snowpipes.
+    - This can be seen in the following SQL worksheet: [storage_integration.txt](Snowflake/Worksheets/storage_integration.txt)
+  - Then, we need to create the internal storage area within Snowflake:
+    - We create the "weather" database, and then create several schemas ("landing", "raw", "silver", and "gold").
+    - We create a file format. 
+    - Once the external stage and landing layer are set up, we can query the data without storing it in Snowflake, and we can navigate through the JSON using the $ notation.
+    - The implementation is available in the following worksheet:x [schema_creation.txt](Snowflake/Worksheets/schema_creation.txt)
+  - Next, we create the tables for the raw layer. Four tables are created, each storing the full JSON object in one column, along with the filename and the processing timestamp (one for each object of study).
+  - Then, we proceed to create the Snowpipes, which will ingest data from Azure into Snowflake whenever a blob is created inside a container, using Event Grid notifications.
+    - The steps are illustrated in the following worksheet: [raw_layer.txt](Snowflake/Worksheets/raw_layer.txt)
   <img src="https://i.imgur.com/OpWGgAq.png" alt="Power BI connection">
 
-In this [File](arm_template.zip) you can see the ARM template to provision a similar workspace in ADF.
 
 
 Here you can see the [video](https://drive.google.com/file/d/1g6jlUvcwRXHP9ZWVMlkXtklbWZ4iJ9AJ/view?usp=sharing) that documents the implementation of the ETL.
