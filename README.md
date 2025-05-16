@@ -17,11 +17,12 @@ Here you can visualize the completed project:
 ## Objectives
 Extract data from an API, transform it, and load it into Power BI.
 
-## Azure Provisioned Resources
-- Azure Data Factory (ADF)
-- Storage Account (ADLS Gen2)
-- Snowflake Instance
-- Azure Event Grid Notifications
+## Provisioned Resources
+  ### Azure
+    - Azure Data Factory (ADF)
+    - Storage Account (ADLS Gen2)
+    - Azure Event Grid Notifications
+  - Snowflake Instance
 
 ## Process Description
 
