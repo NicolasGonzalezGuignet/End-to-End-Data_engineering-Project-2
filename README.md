@@ -86,7 +86,7 @@ Extract data from an API, transform it, and load it into Power BI.
   - <img src="https://i.imgur.com/i5i5nGG.png" alt="model">
  
 
-Here you can see the [video](https://drive.google.com/file/d/1g6jlUvcwRXHP9ZWVMlkXtklbWZ4iJ9AJ/view?usp=sharing) that documents the implementation of the ETL.
+Here you can see the [video](https://drive.google.com/file/d/1dHaZ7ptRNtrSOl9Ww-Q85RGjIFvcayiR/view?usp=sharing) that documents the implementation of the ETL.
 
 
 
